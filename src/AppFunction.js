@@ -1,10 +1,18 @@
 import React, { Fragment, useState, useEffect } from 'react';
 
+const initLocationState = {
+	lat: null,
+	lng: null,
+	speed: null
+};
+
 const App = () => {
 	const [count, setCount] = useState(0);
 	const [isOn, setIsOn] = useState(false);
 	const [mousePosition, setMousePosition] = useState({ x: null, y: null });
 	const [status, setStatus] = useState(navigator.onLine);
+	const [{ lat, lng, speed }, setLocation] = useState(initLocationState);
+	let mounted = true;
 
 	useEffect(
 		() => {
@@ -13,12 +21,16 @@ const App = () => {
 			window.addEventListener('mousemove', handleMouseMove);
 			window.addEventListener('online', handleOnline);
 			window.addEventListener('offline', handleOffline);
+			navigator.geolocation.getCurrentPosition(handleGelolocation);
+			const watchId = navigator.geolocation.watchPosition(handleGelolocation);
 
 			//componentWillUnmount
 			return () => {
 				window.removeEventListener('mousemove', handleMouseMove);
 				window.removeEventListener('online', handleOnline);
 				window.removeEventListener('offline', handleOffline);
+				navigator.geolocation.clearWatch(watchId);
+				mounted = false;
 			};
 		},
 		/**
@@ -27,6 +39,16 @@ const App = () => {
 		 */
 		[count]
 	);
+
+	const handleGelolocation = event => {
+		if (mounted) {
+			setLocation({
+				lat: event.coords.latitude,
+				lng: event.coords.longitude,
+				speed: event.coords.speed
+			});
+		}
+	};
 
 	const handleOnline = () => {
 		setStatus(true);
@@ -76,6 +98,11 @@ const App = () => {
 			<br />
 			<h2>{'Network Status'}</h2>
 			<p>{`You are ${status ? 'online' : 'offline'}`}</p>
+			<br />
+			<h2>{'Geolocation'}</h2>
+			<p>Latitude is {lat}</p>
+			<p>Longitude is {lng}</p>
+			<p>Your speed is {speed ? speed : '0'}</p>
 			<br />
 		</Fragment>
 	);
