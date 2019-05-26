@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { PreviousMap } from 'postcss';
 
 class App extends Component {
 	state = {
@@ -6,9 +7,9 @@ class App extends Component {
 	};
 
 	incrementCount = () => {
-		this.setState({
-			count: this.state.count + 1
-		});
+		this.setState(prevState => ({
+			count: prevState.count + 1
+		}));
 	};
 
 	render() {
