@@ -3,10 +3,32 @@ import React, { Fragment, useState, useEffect } from 'react';
 const App = () => {
 	const [count, setCount] = useState(0);
 	const [isOn, setIsOn] = useState(false);
+	const [mousePosition, setMousePosition] = useState({ x: null, y: null });
 
-	useEffect(() => {
-		document.title = `You have clicked ${count} times`;
-	});
+	useEffect(
+		() => {
+			//componentDidMount and componentDidUpdate
+			document.title = `You have clicked ${count} times`;
+			window.addEventListener('mousemove', handleMouseMove);
+
+			//componentWillUnmount
+			return () => {
+				window.removeEventListener('mousemove', handleMouseMove);
+			};
+		},
+		/**
+		 * With this EMPYT array, the useEffect ONLY run on Mount and Unmount.
+		 * With this array with some value/variable, the useEffect will be run on Mount, Unmount and when this value/variable change.
+		 */
+		[count]
+	);
+
+	const handleMouseMove = event => {
+		setMousePosition({
+			x: event.pageX,
+			y: event.pageY
+		});
+	};
 
 	const incrementCount = () => {
 		setCount(prevCount => prevCount + 1);
@@ -36,6 +58,9 @@ const App = () => {
 				alt={'Flashlight'}
 				onClick={toggleLight}
 			/>
+			<h2>{'Mouse Position'}</h2>
+			<p>{JSON.stringify(mousePosition, null, 2)}</p>
+			<br />
 		</Fragment>
 	);
 };
