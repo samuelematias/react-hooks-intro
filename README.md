@@ -18,7 +18,7 @@
 
 <!-- about app and course section -->
 
-## About this app and the course
+## About this app
 
 This app was developed on the Udemy Course [React Hooks](https://www.udemy.com/react-hooks/) by [Reed Barger](https://www.udemy.com/user/reed-barger//).
 
